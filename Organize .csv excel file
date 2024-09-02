@@ -1,0 +1,25 @@
+Sub Makro1()
+    ' Makro1arragnetheLines
+    ' Text-to-Columns
+
+    Range("A1:A2000").TextToColumns _
+        Destination:=Range("A1"), _
+        DataType:=xlDelimited, _
+        TextQualifier:=xlDoubleQuote, _
+        ConsecutiveDelimiter:=True, _
+        Tab:=False, _
+        Semicolon:=False, _
+        Comma:=True, _
+        Space:=False, _
+        Other:=False
+        Columns("C").ColumnWidth = 20
+        Columns("W").ColumnWidth = 20
+        Columns("X").ColumnWidth = 20
+        Columns("Y").ColumnWidth = 20
+        Columns("Z").ColumnWidth = 20
+        Columns("AA").ColumnWidth = 20
+        Columns("AB").ColumnWidth = 20
+        Columns("AC").ColumnWidth = 20
+        Columns("AD").ColumnWidth = 20
+        
+End Sub
