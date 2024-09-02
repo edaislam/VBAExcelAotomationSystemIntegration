@@ -1,0 +1,74 @@
+'Prepared by Eda islam
+Sub copythecontent()
+   'copy the content of the wanted file
+   Dim FilePicker As FileDialog
+   Dim mypath As String
+   Dim wbSource As Workbook
+   Dim wsSource As Worksheet
+   Dim wbTarget As Workbook
+   Dim wsTarget As Worksheet
+   Dim sheetName As String
+   
+   Dim csvFilePath As String
+   Dim xlsxFilePath As String
+   Dim fso As Object
+   
+   Set FilePicker = Application.FileDialog(msoFileDialogFilePicker)
+       With FilePicker
+           .Title = "Dosyayı seçiniz:"
+           .AllowMultiSelect = False
+           .ButtonName = "Bitir"
+               If .Show = -1 Then
+                   mypath = .SelectedItems(1)
+               Else
+                   Exit Sub
+               End If
+        End With
+        
+     MsgBox "File path: " & mypath
+     
+    ' Open the selected workbook and get the first sheet
+    Set wbSource = Workbooks.Open(mypath)
+    Set wsSource = wbSource.Sheets(1)
+    sheetName = wsSource.Name
+    
+    ' Save the CSV file as an XLSX file
+    csvFilePath = mypath
+    xlsxFilePath = Left(csvFilePath, InStrRev(csvFilePath, ".")) & "xlsx"
+    
+     ' Save the workbook as XLSX
+    wbSource.SaveAs Filename:=xlsxFilePath, FileFormat:=xlOpenXMLWorkbook
+    wbSource.Close SaveChanges:=False
+    
+     ' Open the newly saved XLSX file
+    Set wbSource = Workbooks.Open(xlsxFilePath)
+    Set wsSource = wbSource.Sheets(1)
+    
+    ' Reference the target workbook and target sheet
+    On Error Resume Next
+    Set wbTarget = Workbooks("System.xlsm")
+    Set wsTarget = wbTarget.Sheets("STREAM 1_Cycle")
+    On Error GoTo 0
+    
+    If wbTarget Is Nothing Then
+        MsgBox "Workbook 'System.xlsm' is not open."
+        wbSource.Close SaveChanges:=False
+        Exit Sub
+    End If
+    
+    If wsTarget Is Nothing Then
+        MsgBox "Sheet 'STREAM 1_Cycle' not found in 'System.xlsm'."
+        wbSource.Close SaveChanges:=False
+        Exit Sub
+    End If
+    
+    
+    ' Copy the range from the source sheet to the target sheet
+    wsSource.Range("A1:AD2000").Copy
+    wsTarget.Range("A1").PasteSpecial xlPasteValues
+    
+    MsgBox "Content copied to 'System.xlsm' in 'STREAM 1_Cycle'."
+    
+    ' Close the source workbook
+    wbSource.Close SaveChanges:=False
+End Sub
